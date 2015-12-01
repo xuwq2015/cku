@@ -7,6 +7,9 @@
 #include <unistd.h>
 #include <string.h>
 #include <error.h>
+#include <termios.h>
+
+
 
 int set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop) {	//串口初始化函数
 	/*
@@ -99,12 +102,14 @@ int set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop) {	//串口初
 		}
 	}
 	
-	retrun 0;
+	return 0;
 }
 
 int main(int argc, int *argv[]) {
-	int fd;
+	int fd, i = 10, wr_static, r_static;
 	char *uart3 = "/dev/ttySAC3";
+	char *buffer = "hello world!\n";
+	char *r_buffer[512];
 	
 	/* 打开串口文件 */
 	if((fd = open(uart3, O_RDWR|O_CREAT, 0777)) < 0) {
@@ -118,8 +123,23 @@ int main(int argc, int *argv[]) {
 	if((set_opt(fd, 115200, 8, 'N', 1)) < 0) {
 		printf("ttr init error\n");
 		exit(1);
+	}else {
+		while(i--) {
+			wr_static = write(fd, buffer, strlen(buffer));
+			if(wr_static < 0) {
+				perror("write");
+			}else {
+				printf("write is %d\n", wr_static);
+			}
+			sleep(20);
+			memset(r_buffer, '\0', sizeof(r_buffer));
+			if((r_static = read(fd, r_buffer, 512)) < 0) {
+				perror("read");
+				exit(1);
+			}
+		} 
 	}
 	
 	close(fd);
-	retrun 0;
+	return 0;
 }
