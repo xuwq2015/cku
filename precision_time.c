@@ -1,3 +1,6 @@
+/*
+	高精度时间，可以用来测试程序运行所用时间，单位精确到微妙
+*/
 #include <stdio.h>
 #include <sys/time.h>
 
