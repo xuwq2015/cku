@@ -5,7 +5,7 @@
 
 void func(int sig, siginfo_t *info, void *p) {
 	printf("收到信号，来自用户%d的进程%d，附带参数为%d\n", info->si_uid,
-		info->si_pid, info->si_value);
+		info->si_pid, info->si_value.sival_int);
 }
 
 int main() {
